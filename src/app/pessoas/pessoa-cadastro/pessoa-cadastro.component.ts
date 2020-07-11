@@ -7,7 +7,7 @@ import { ToastyService } from 'ng2-toasty';
 
 import { ErrorHandlerService } from 'app/core/error-handler.service';
 import { PessoaService } from '../pessoa.service';
-import { Pessoa, Contato } from 'app/core/model';
+import { Pessoa } from 'app/core/model';
 
 @Component({
   selector: 'app-pessoa-cadastro',
@@ -17,6 +17,7 @@ import { Pessoa, Contato } from 'app/core/model';
 export class PessoaCadastroComponent implements OnInit {
 
   pessoa = new Pessoa();
+  estados: any[];
 
   constructor(
     private pessoaService: PessoaService,
@@ -32,9 +33,18 @@ export class PessoaCadastroComponent implements OnInit {
 
     this.title.setTitle('Nova pessoa');
 
+    this.carregarEstados();
+
     if (codigoPessoa) {
       this.carregarPessoa(codigoPessoa);
     }
+  }
+
+  carregarEstados() {
+    this.pessoaService.listarEstados().then(lista => {
+      this.estados = lista.map(uf => ({ label: uf.nome, value: uf.codigo }));
+    })
+    .catch(erro => this.errorHandler.handle(erro));
   }
 
   get editando() {
